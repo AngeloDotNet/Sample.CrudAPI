@@ -27,7 +27,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("person/{id}")]
-    public async Task<IActionResult> GetPerson(int id)
+    public async Task<IActionResult> GetPerson(Guid id)
     {
         var person = await peopleService.GetPersonAsync(id);
         return Ok(person);
@@ -48,7 +48,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpDelete("person/{id}")]
-    public async Task<IActionResult> DeletePerson(int id)
+    public async Task<IActionResult> DeletePerson(Guid id)
     {
         var person = await peopleService.GetPersonAsync(id);
 

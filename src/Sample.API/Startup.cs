@@ -29,12 +29,23 @@ public class Startup
             });
         });
 
-        services.AddDbContextPool<DataDbContext>(optionsBuilder =>
-        {
-            var connectionString = Configuration.GetSection("ConnectionStrings").GetValue<string>("Default");
+        var databaseInMemory = Configuration.GetSection("DatabaseInMemory").GetValue<bool>("enabled");
+        var connectionString = Configuration.GetSection("ConnectionStrings").GetValue<string>("Default");
 
-            optionsBuilder.UseSqlite(connectionString);
-        });
+        if (databaseInMemory)
+        {
+            services.AddDbContext<DataDbContext>(option =>
+            {
+                option.UseInMemoryDatabase("People");
+            });
+        }
+        else
+        {
+            services.AddDbContextPool<DataDbContext>(optionsBuilder =>
+            {
+                optionsBuilder.UseSqlite(connectionString);
+            });
+        }
 
         services.AddScoped<DbContext, DataDbContext>();
         services.AddScoped<IUnitOfWork, UnitOfWork<DbContext>>();

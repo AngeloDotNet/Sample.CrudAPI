@@ -48,9 +48,9 @@ public class Startup
         }
 
         services.AddScoped<DbContext, DataDbContext>();
-        services.AddScoped<IUnitOfWork, UnitOfWork<DbContext>>();
-        services.AddScoped<IDatabaseRepository, DatabaseRepository<DbContext>>();
-        services.AddScoped<ICommandRepository, CommandRepository<DbContext>>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IDatabaseRepository, DatabaseRepository>();
+        services.AddScoped<ICommandRepository, CommandRepository>();
 
         services.AddTransient<IPeopleService, PeopleService>();
     }

@@ -1,5 +1,5 @@
-﻿using Data.EFCore.CustomV1.Interfaces;
-using Sample.API.Entity;
+﻿using Sample.API.Entity;
+using Sample.API.Shared.Interfaces;
 
 namespace Sample.API.Infrastructure.Interfaces;
 

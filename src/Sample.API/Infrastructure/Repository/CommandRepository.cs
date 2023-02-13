@@ -1,13 +1,12 @@
-﻿using Data.EFCore.CustomV1;
-using Microsoft.EntityFrameworkCore;
-using Sample.API.Entity;
+﻿using Sample.API.Entity;
 using Sample.API.Infrastructure.Interfaces;
+using Sample.API.Shared;
 
 namespace Sample.API.Infrastructure.Repository;
 
-public class CommandRepository<TContext> : Command<PersonEntity>, ICommandRepository where TContext : DbContext
+public class CommandRepository : Command<PersonEntity>, ICommandRepository
 {
-    public CommandRepository(TContext dbContext) : base(dbContext)
+    public CommandRepository(DataDbContext dbContext) : base(dbContext)
     {
     }
 }

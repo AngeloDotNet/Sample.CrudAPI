@@ -1,13 +1,12 @@
-﻿using Data.EFCore.CustomV1;
-using Microsoft.EntityFrameworkCore;
-using Sample.API.Entity;
+﻿using Sample.API.Entity;
 using Sample.API.Infrastructure.Interfaces;
+using Sample.API.Shared;
 
 namespace Sample.API.Infrastructure.Repository;
 
-public class DatabaseRepository<TContext> : Database<PersonEntity>, IDatabaseRepository where TContext : DbContext
+public class DatabaseRepository : Database<PersonEntity>, IDatabaseRepository
 {
-    public DatabaseRepository(TContext dbContext) : base(dbContext)
+    public DatabaseRepository(DataDbContext dbContext) : base(dbContext)
     {
     }
 }

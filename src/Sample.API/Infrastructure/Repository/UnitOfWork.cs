@@ -1,15 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Sample.API.Infrastructure.Interfaces;
+﻿using Sample.API.Infrastructure.Interfaces;
 
 namespace Sample.API.Infrastructure.Repository;
 
-public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
+public class UnitOfWork : IUnitOfWork
 {
-    private readonly TContext dbContext;
+    private readonly DataDbContext dbContext;
     public IDatabaseRepository DatabaseRepository { get; }
     public ICommandRepository CommandRepository { get; }
 
-    public UnitOfWork(TContext dbContext, IDatabaseRepository databaseRepository, ICommandRepository commandRepository)
+    public UnitOfWork(DataDbContext dbContext, IDatabaseRepository databaseRepository, ICommandRepository commandRepository)
     {
         this.dbContext = dbContext;
 

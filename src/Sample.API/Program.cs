@@ -6,6 +6,8 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        builder.AddSerilogOptionsBuilder();
+
         Startup startup = new(builder.Configuration);
 
         startup.ConfigureServices(builder.Services);

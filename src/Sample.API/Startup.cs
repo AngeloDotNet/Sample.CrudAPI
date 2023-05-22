@@ -1,11 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Sample.API.Infrastructure;
-using Sample.API.Infrastructure.Interfaces;
-using Sample.API.Infrastructure.Repository;
-using Sample.API.Service;
-
-namespace Sample.API;
+﻿namespace Sample.API;
 
 public class Startup
 {
@@ -17,42 +10,21 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers()
+            .AddSimpleJsonOptions();
+
         services.AddEndpointsApiExplorer();
+        services.AddSwaggerGenConfig("Sample API", "v1", string.Empty);
 
-        services.AddSwaggerGen(config =>
-        {
-            config.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Sample API",
-                Version = "v1"
-            });
-        });
-
-        var databaseInMemory = Configuration.GetSection("DatabaseInMemory").GetValue<bool>("enabled");
         var connectionString = Configuration.GetSection("ConnectionStrings").GetValue<string>("Default");
 
-        if (databaseInMemory)
-        {
-            services.AddDbContext<DataDbContext>(option =>
-            {
-                option.UseInMemoryDatabase("People");
-            });
-        }
-        else
-        {
-            services.AddDbContextPool<DataDbContext>(optionsBuilder =>
-            {
-                optionsBuilder.UseSqlite(connectionString);
-            });
-        }
-
-        services.AddScoped<DbContext, DataDbContext>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IDatabaseRepository, DatabaseRepository>();
-        services.AddScoped<ICommandRepository, CommandRepository>();
+        services.AddDbContextGenericsMethods<DataDbContext>();
+        services.AddDbContextUseSQLite<DataDbContext>(connectionString);
 
         services.AddTransient<IPeopleService, PeopleService>();
+
+        services.AddFluentValidationService<Program>();
+        services.AddSerilogSeqServices();
     }
 
     public void Configure(WebApplication app)
@@ -60,14 +32,11 @@ public class Startup
         IWebHostEnvironment env = app.Environment;
 
         app.UseHttpsRedirection();
+        app.AddSerilogConfigureServices();
 
         if (env.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Sample API");
-            });
+            app.AddUseSwaggerUI("Sample API");
         }
 
         app.UseRouting();

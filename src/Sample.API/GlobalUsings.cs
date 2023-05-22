@@ -1,0 +1,15 @@
+﻿global using FluentValidation;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using NET6CustomLibrary.EFCore.Core.Interfaces;
+global using NET6CustomLibrary.EFCore.Infrastructure.Interfaces;
+global using NET6CustomLibrary.Errors;
+global using NET6CustomLibrary.Extensions;
+global using NET6CustomLibrary.Serilog.Services;
+global using NET6CustomLibrary.Swagger;
+global using NET6CustomLibrary.Validazione.Interfaces;
+global using Sample.API.Controllers.Common;
+global using Sample.API.Entity;
+global using Sample.API.Infrastructure;
+global using Sample.API.Service;
+global using System.Net.Mime;

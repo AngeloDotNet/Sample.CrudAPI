@@ -1,6 +1,6 @@
 ﻿namespace Sample.API.Entity;
 
-public class PersonEntity
+public class PersonEntity : IEntity<Guid>
 {
     public Guid Id { get; set; }
     public string Cognome { get; set; }

@@ -11,7 +11,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="NET6CustomLibrary" Version="1.0.151" />
+		<PackageReference Include="NET6CustomLibrary" Version="1.0.169" />
 	</ItemGroup>
 
 	<ItemGroup>

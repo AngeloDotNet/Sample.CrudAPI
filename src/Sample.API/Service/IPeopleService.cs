@@ -1,12 +1,10 @@
-﻿using Sample.API.Entity;
-
-namespace Sample.API.Service;
+﻿namespace Sample.API.Service;
 
 public interface IPeopleService
 {
-    Task<List<PersonEntity>> GetPeopleAsync();
-    Task<PersonEntity> GetPersonAsync(Guid id);
-    Task CreatePersonAsync(PersonEntity person);
-    Task UpdatePersonAsync(PersonEntity person);
-    Task DeletePersonAsync(PersonEntity person);
+    Task<List<PersonEntity>> GetListItemAsync();
+    Task<PersonEntity> GetItemAsync(Guid id);
+    Task CreateItemAsync(PersonEntity item);
+    Task UpdateItemAsync(PersonEntity item);
+    Task DeleteItemAsync(PersonEntity item);
 }

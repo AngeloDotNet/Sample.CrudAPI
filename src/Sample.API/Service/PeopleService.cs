@@ -1,41 +1,38 @@
-﻿using Sample.API.Entity;
-using Sample.API.Infrastructure.Interfaces;
-
-namespace Sample.API.Service;
+﻿namespace Sample.API.Service;
 
 public class PeopleService : IPeopleService
 {
-    private readonly IUnitOfWork unitOfWork;
+    private readonly IUnitOfWork<PersonEntity, Guid> unitOfWork;
+    private readonly IValidation validation;
 
-    public PeopleService(IUnitOfWork unitOfWork)
+    public PeopleService(IUnitOfWork<PersonEntity, Guid> unitOfWork, IValidation validation)
     {
         this.unitOfWork = unitOfWork;
+        this.validation = validation;
     }
 
-    public async Task<List<PersonEntity>> GetPeopleAsync()
+    public async Task<List<PersonEntity>> GetListItemAsync()
     {
-        var people = await unitOfWork.DatabaseRepository.GetAllAsync();
-        return people;
+        return await unitOfWork.ReadOnly.GetAllAsync();
     }
 
-    public async Task<PersonEntity> GetPersonAsync(Guid id)
+    public async Task<PersonEntity> GetItemAsync(Guid id)
     {
-        var person = await unitOfWork.DatabaseRepository.GetByIdAsync(id);
-        return person;
+        return await unitOfWork.ReadOnly.GetByIdAsync(id);
     }
 
-    public async Task CreatePersonAsync(PersonEntity person)
+    public async Task CreateItemAsync(PersonEntity item)
     {
-        await unitOfWork.CommandRepository.CreateAsync(person);
+        await unitOfWork.Command.CreateAsync(item);
     }
 
-    public async Task UpdatePersonAsync(PersonEntity person)
+    public async Task UpdateItemAsync(PersonEntity item)
     {
-        await unitOfWork.CommandRepository.UpdateAsync(person);
+        await unitOfWork.Command.UpdateAsync(item);
     }
 
-    public async Task DeletePersonAsync(PersonEntity person)
+    public async Task DeleteItemAsync(PersonEntity item)
     {
-        await unitOfWork.CommandRepository.DeleteAsync(person);
+        await unitOfWork.Command.DeleteAsync(item);
     }
 }

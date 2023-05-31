@@ -1,11 +1,10 @@
-﻿global using FluentValidation;
-global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+﻿global using CustomLibrary.EFCore.EFCore.Core.Interfaces;
+global using CustomLibrary.EFCore.EFCore.Infrastructure.Interfaces;
+global using CustomLibrary.EFCore.Extensions;
+global using FluentValidation;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
-global using Microsoft.Extensions.Diagnostics.HealthChecks;
 global using NET6CustomLibrary.CustomResponse;
-global using NET6CustomLibrary.EFCore.Core.Interfaces;
-global using NET6CustomLibrary.EFCore.Infrastructure.Interfaces;
 global using NET6CustomLibrary.ErrorController.Filters;
 global using NET6CustomLibrary.Extensions;
 global using NET6CustomLibrary.Serilog.Services;

@@ -10,7 +10,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddControllers()
+        services.AddControllers(options => options.Filters.Add<ControllerApiExceptionFilter>())
             .AddSimpleJsonOptions();
 
         services.AddEndpointsApiExplorer();
@@ -18,13 +18,15 @@ public class Startup
 
         var connectionString = Configuration.GetSection("ConnectionStrings").GetValue<string>("Default");
 
-        services.AddDbContextGenericsMethods<DataDbContext>();
-        services.AddDbContextUseSQLite<DataDbContext>(connectionString);
+        services.AddDbContextGenerics<DataDbContext>();
+        services.AddDbContextUseSQLite<DataDbContext>(connectionString, string.Empty);
 
         services.AddTransient<IPeopleService, PeopleService>();
 
         services.AddFluentValidationService<Program>();
         services.AddSerilogSeqServices();
+
+        services.AddHealthChecksSQLite<DataDbContext>("https://angelodotnet.github.io/", "Sample API", connectionString);
     }
 
     public void Configure(WebApplication app)
@@ -40,6 +42,8 @@ public class Startup
         }
 
         app.UseRouting();
+        app.UseHealthChecksConfigure();
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

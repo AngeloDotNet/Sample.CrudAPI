@@ -1,63 +1,96 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Sample.API.Entity;
-using Sample.API.Service;
-using System.Net.Mime;
+﻿namespace Sample.API.Controllers;
 
-namespace Sample.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-[Produces(MediaTypeNames.Application.Json)]
-public class PeopleController : ControllerBase
+public class PeopleController : BaseController
 {
-    private readonly ILogger<PeopleController> logger;
+    private readonly ILoggerService logger;
     private readonly IPeopleService peopleService;
+    private readonly IValidation validation;
 
-    public PeopleController(ILogger<PeopleController> logger, IPeopleService peopleService)
+    public PeopleController(ILoggerService logger, IPeopleService peopleService, IValidation validation)
     {
         this.logger = logger;
         this.peopleService = peopleService;
+        this.validation = validation;
     }
 
-    [HttpGet("people")]
+    [HttpGet]
     public async Task<IActionResult> GetPeople()
     {
-        var people = await peopleService.GetPeopleAsync();
-        return Ok(people);
+        var result = await peopleService.GetListItemAsync();
+
+        return result.Count > 0
+            ? Ok(new DefaultResponse(true, result))
+            : throw new ExceptionResponse(HttpStatusCode.NotFound, 0, "NotFound", $"The people list is empty");
     }
 
-    [HttpGet("person/{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetPerson(Guid id)
     {
-        var person = await peopleService.GetPersonAsync(id);
-        return Ok(person);
+        var result = await GetSinglePerson(id);
+
+        return result != null
+            ? Ok(new DefaultResponse(true, result))
+            : throw new ExceptionResponse(HttpStatusCode.NotFound, 0, "NotFound", $"Person with id {id} not found");
     }
 
-    [HttpPost("person")]
-    public async Task<IActionResult> CreatePerson([FromBody] PersonEntity person)
+    [HttpPost]
+    public async Task<IActionResult> CreatePerson([FromBody] PersonEntity person, [FromServices] IValidator<PersonEntity> validator)
     {
-        await peopleService.CreatePersonAsync(person);
-        return CreatedAtAction("GetPerson", new { id = person.Id }, person);
+        await ValidationEntity(person, validator);
+
+        if (await GetSinglePerson(person.Id) != null)
+        {
+            logger.SaveLogWarning($"Person with id {person.Id} already exists");
+            throw new ExceptionResponse(HttpStatusCode.Conflict, 0, "Conflict", $"Person with id {person.Id} already exists");
+        }
+
+        await peopleService.CreateItemAsync(person);
+
+        logger.SaveLogInformation($"Create person with id {person.Id}");
+        return Ok(new DefaultResponse(true, person));
     }
 
-    [HttpPut("person")]
-    public async Task<IActionResult> UpdatePerson([FromBody] PersonEntity person)
+    [HttpPut]
+    public async Task<IActionResult> UpdatePerson([FromBody] PersonEntity person, [FromServices] IValidator<PersonEntity> validator)
     {
-        await peopleService.UpdatePersonAsync(person);
-        return Ok();
+        await ValidationEntity(person, validator);
+
+        await peopleService.UpdateItemAsync(person);
+
+        logger.SaveLogInformation($"Update person with id {person.Id}");
+        return Ok(new DefaultResponse(true, $"Update person with id {person.Id}"));
     }
 
-    [HttpDelete("person/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePerson(Guid id)
     {
-        var person = await peopleService.GetPersonAsync(id);
+        var person = await GetSinglePerson(id);
 
         if (person == null)
         {
-            return NotFound();
+            logger.SaveLogWarning($"Person with id {id} not found");
+            throw new ExceptionResponse(HttpStatusCode.NotFound, 0, "NotFound", $"Person with id {id} not found");
         }
 
-        await peopleService.DeletePersonAsync(person);
-        return Ok();
+        await peopleService.DeleteItemAsync(person);
+
+        logger.SaveLogInformation($"Delete person with id {person.Id}");
+        return Ok(new DefaultResponse(true, $"Delete person with id {person.Id}"));
+    }
+
+    private async Task<PersonEntity> GetSinglePerson(Guid id)
+    {
+        return await peopleService.GetItemAsync(id);
+    }
+
+    private async Task ValidationEntity<T>(T person, IValidator<T> validator) where T : class
+    {
+        var validationResult = await validator.ValidateAsync(person);
+
+        if (!validationResult.IsValid)
+        {
+            logger.SaveLogError($"Validation not valid");
+            throw new ExceptionResponse(HttpStatusCode.UnprocessableEntity, 0, "UnprocessableEntity", $"Validation not valid", validation.ProcessErrorList(validationResult));
+        }
     }
 }

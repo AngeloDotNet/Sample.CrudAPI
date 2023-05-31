@@ -4,9 +4,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-        builder.AddSerilogOptionsBuilder();
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args)
+            .AddSerilogOptionsBuilder();
 
         Startup startup = new(builder.Configuration);
 

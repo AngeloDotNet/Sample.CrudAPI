@@ -7,12 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CustomLibrary.EFCore" Version="1.0.11" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
+		<PackageReference Include="CustomLibrary.EFCore" Version="1.0.30" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.8">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="NET6CustomLibrary" Version="1.0.171" />
+		<PackageReference Include="NET6CustomLibrary" Version="1.0.197" />
 	</ItemGroup>
 
 	<ItemGroup>
